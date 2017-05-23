@@ -1,7 +1,7 @@
 # Rundeck
 
 ### 注意
-* 先にRundeckへログインする必要ある
+* -
 
 ### rundeck api
 * format:json | xml
