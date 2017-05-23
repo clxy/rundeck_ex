@@ -1,4 +1,4 @@
-# Rundeck機能強化
+# Rundeck
 
 ### 注意
 * 先にRundeckへログインする必要ある
