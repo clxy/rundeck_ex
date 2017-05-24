@@ -1,7 +1,8 @@
 # Rundeck
 
 ### 注意
-* -
+* rundeckにログインしたら、API利用できなくなるので、API利用廃棄、RundeckのWeb画面を利用
+*
 
 ### rundeck api
 * format:json | xml

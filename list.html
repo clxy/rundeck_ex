@@ -31,20 +31,40 @@
       </div>
     </div>
 
-    <table id="list">
+    <table id="list" class="table table-striped">
       <thead>
-        <th>name</th>
-        <th>group</th>
-        <th>group</th>
+        <tr>
+          <th>No.</th>
+          <th>Group</th>
+          <th>Name</th>
+          <th>Schedule</th>
+          <th>Next Execution</th>
+          <th>Steps</th>
+          <th>Nodes</th>
+          <th>Notification</th>
+          <!--<th>Statistics</th>-->
+        </tr>
+        <tr class="template">
+          <td>{index}</td>
+          <td>{job.group}</td>
+          <td title="{job.description}">{job.name}</td>
+          <td>{job.schedule}</td>
+          <td>{job.nextExecution}</td>
+          <td>{job.steps}</td>
+          <td>{job.nodes}</td>
+          <td>{job.notification}</td>
+          <!--<td>{job.statistics}</td>-->
+        </tr>
       </thead>
+      <tbody>
+      </tbody>
     </table>
 
   </div>
 
   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
     crossorigin="anonymous"></script>
-
-  <script type="text/javascript" src="js-yaml.min.js"></script>
+  <script type="text/javascript" src="nano.js"></script>
   <script type="text/javascript" src="local_config.js"></script>
   <script type="text/javascript" src="list.js"></script>
 </body>
