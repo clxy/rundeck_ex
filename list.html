@@ -21,16 +21,18 @@
       </div>
       <div class="col-md-6">
         <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search for...">
+          <input type="text" class="form-control" placeholder="Search for..." id="condition">
           <span class="input-group-btn">
-            <button class="btn btn-default" type="button">
+            <button class="btn btn-default btn-find" type="button">
               <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
           </button>
           </span>
         </div>
       </div>
     </div>
-
+    <div class="row">
+      <div class="col-md-12">行数：<span class="row-count">0</span></div>
+    </div>
     <table id="list" class="table table-striped">
       <thead>
         <tr>
@@ -38,7 +40,7 @@
           <th>Group</th>
           <th>Name</th>
           <th>Schedule</th>
-          <th>Next Execution</th>
+          <th>NextExecution</th>
           <th>Steps</th>
           <th>Nodes</th>
           <th>Notification</th>
@@ -46,13 +48,13 @@
         </tr>
         <tr class="template">
           <td>{index}</td>
-          <td>{job.group}</td>
-          <td title="{job.description}">{job.name}</td>
-          <td>{job.schedule}</td>
-          <td>{job.nextExecution}</td>
-          <td>{job.steps}</td>
-          <td>{job.nodes}</td>
-          <td>{job.notification}</td>
+          <td data='group'>{job.group}</td>
+          <td title="{job.description}" data='name'>{job.name}</td>
+          <td data='schedule'>{job.schedule}</td>
+          <td data='nextExecution'>{job.nextExecution}</td>
+          <td data='steps'>{job.steps}</td>
+          <td data='nodes'>{job.nodes}</td>
+          <td data='notification'>{job.notification}</td>
           <!--<td>{job.statistics}</td>-->
         </tr>
       </thead>

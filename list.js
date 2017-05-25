@@ -1,6 +1,51 @@
 var lastUpdate = false;
 var jobs = [];
 
+function find() {
+  if (jobs.length <= 0) return;
+  var text = $("#condition").val().trim();
+  if (text == '') return show();
+  var isOr = false;
+  var conds = {};
+  $.each(text.split(/[, ]/g), function (i, c) {
+    var key = c.toLowerCase();
+    if (key == 'or') {
+      isOr = true;
+      return;
+    }
+    var p = key.split(/[=]/g);
+    if (p.length == 2) conds[p[0]] = p[1];
+  });
+  show(conds, isOr);
+  $(".row-count").text($("#list tbody tr:visible").length);
+}
+
+function show(conds, isOr) {
+  isOr = isOr || (conds && Object.keys(conds).length == 1);
+  $("#list tbody").children('tr').map(function () {
+    var $tr = $(this).show();
+    if (!conds) return;
+
+    var allMatched = false;
+    $tr.children('td').each(function (i, td) {
+      var $td = $(td);
+      var searhValue = conds[$td.attr('data')];
+      if (!searhValue) return;
+      var tdMatched = $(td).text().trim().toLowerCase().indexOf(searhValue) >= 0;
+      if (tdMatched && isOr) {
+        allMatched = true;
+        return false;
+      }
+      if (!tdMatched && !isOr) {
+        allMatched = false;
+        return false;
+      }
+      allMatched = allMatched || tdMatched;
+    });
+    if (!allMatched) $tr.hide();
+  });
+}
+
 function fetch(api) {
   return $.ajax({
     url: CONFIG.url + api,
@@ -25,11 +70,21 @@ function fetchAll() {
         jobs.push({
           group: $.trim($jobData.find(".jobInfoSection a.secondary").text()),
           name: $.trim($jobData.find(".jobInfoSection a.primary").text()),
-          schedule: $.trim($jobData.find(".crontab").text()),
+          schedule:
+          $jobData
+            .find(".crontab .cronselected")
+            .map(function () { return $.trim($(this).text()); })
+            .get().join(" "),
           nextExecution: $.trim($jobData.find("#schedExDetails .timeabs").text()),
-          steps: $jobData.find(".argString").map(function () { return $.trim($(this).text()); }).get().join("<br>"),
+          steps:
+          $jobData
+            .find(".argString")
+            .map(function () { return $.trim($(this).text()); })
+            .get().join("<br>"),
           nodes: $.trim($jobData.find("[title='Display matching nodes'] .queryvalue").text()),
-          notification: $.trim($jobData.find(".displabel").next('td').text()).replace(/\n/g, '').replace(/( )+/g, ' ')
+          notification:
+          $.trim($jobData.find(".displabel").next('td').text())
+            .replace(/\n/g, '').replace(/( )+/g, ' ')
         });
       });
       // return false;
@@ -49,11 +104,14 @@ function doPrint() {
   var $tbody = $("#list").children('tbody');
   $tbody.empty();
   var template = $('.template').html();
-  $.each(jobs, function (i, job) {
-    $tbody.append("<tr>" + nano(template, { index: i, job: job }) + "</tr>");
-  });
+  $tbody[0].innerHTML = $.map(
+    jobs,
+    function (job, i) {
+      return "<tr>" + nano(template, { index: i + 1, job: job }) + "</tr>";
+    }).join('');
 
   lastUpdate = "完了..." + new Date();
+  $(".row-count").text($("#list tbody tr:visible").length);
   showMessage(lastUpdate);
 }
 
@@ -64,6 +122,7 @@ function showMessage(msg) {
 
 $(function () {
   $('.btn-refresh').on('click', fetchAll);
+  $('.btn-find').on('click', find);
 
   $(document)
     .ajaxStart(function () {
