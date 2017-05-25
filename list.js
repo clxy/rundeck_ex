@@ -1,4 +1,3 @@
-var lastUpdate = false;
 var jobs = [];
 
 function find() {
@@ -57,10 +56,7 @@ function fetch(api) {
 function fetchAll() {
   fetch('/rundeck/project/iSSP/jobs').done(function (jobsData) {
     var $jobs = $(jobsData).find(".sectionhead");
-    if ($jobs.length <= 0) {
-      lastUpdate = "先にログインしてください";
-      return;
-    }
+    if ($jobs.length <= 0) return;
 
     showMessage('Job数 :' + $jobs.length);
     $jobs.each(function (i, job) {
@@ -93,7 +89,12 @@ function fetchAll() {
 }
 
 function doPrint() {
-  showMessage(lastUpdate);
+  if (jobs.length <= 0) {
+    showMessage("ログイン必要あるかもしれません");
+    return;
+  } else {
+    showMessage("表示中...");
+  }
 
   jobs.sort(function (j1, j2) {
     var g1 = j1.group;
@@ -110,9 +111,8 @@ function doPrint() {
       return "<tr>" + nano(template, { index: i + 1, job: job }) + "</tr>";
     }).join('');
 
-  lastUpdate = "完了..." + new Date();
   $(".row-count").text($("#list tbody tr:visible").length);
-  showMessage(lastUpdate);
+  showMessage("完了..." + new Date());
 }
 
 function showMessage(msg) {
@@ -127,20 +127,13 @@ $(function () {
   $(document)
     .ajaxStart(function () {
       $('.btn-refresh').prop('disabled', true);
-      lastUpdate = '更新中...';
       jobs = [];
-      showMessage(lastUpdate);
-    })
-    .ajaxError(function (event, request, settings) {
-      lastUpdate = '失敗...';
-    })
-    .ajaxSuccess(function (event, request, settings) {
-      lastUpdate = '表示中...';
+      showMessage('更新中...');
     })
     .ajaxComplete(function () {
       doPrint();
       $('.btn-refresh').prop('disabled', false);
     });
 
-  if (!lastUpdate) fetchAll();
+  fetchAll();
 });
