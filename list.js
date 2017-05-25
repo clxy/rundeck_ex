@@ -130,7 +130,7 @@ $(function () {
       jobs = [];
       showMessage('更新中...');
     })
-    .ajaxComplete(function () {
+    .ajaxStop(function () {
       doPrint();
       $('.btn-refresh').prop('disabled', false);
     });
