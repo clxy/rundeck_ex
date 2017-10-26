@@ -5,13 +5,14 @@
   <meta charset="utf-8" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
     crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.4.2/css/buttons.bootstrap.min.css" />
   <link href="list.css" rel="stylesheet">
 </head>
 
 <body>
 
   <div class="container-fluid">
-
     <div class="row">
       <div class="col-md-6">
         <button type="button" class="btn btn-primary btn-refresh">
@@ -19,54 +20,53 @@
         </button>
         <span class="message">前回更新：2017-03-01 23:59:59.999</span>
       </div>
-      <div class="col-md-6">
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search for..." id="condition">
-          <span class="input-group-btn">
-            <button class="btn btn-default btn-find" type="button">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-          </button>
-          </span>
-        </div>
+      <div class="col-md-6" id="buttons">
       </div>
     </div>
     <div class="row">
-      <div class="col-md-12">行数：<span class="row-count">0</span></div>
+      <div class="col-md-12">行数：
+        <span class="row-count">0</span>
+      </div>
     </div>
-    <table id="list" class="table table-striped">
-      <thead>
-        <tr>
-          <th>No.</th>
-          <th>Group</th>
-          <th>Name</th>
-          <th>Schedule</th>
-          <th>NextExecution</th>
-          <th>Steps</th>
-          <th>Nodes</th>
-          <th>Notification</th>
-          <!--<th>Statistics</th>-->
-        </tr>
-        <tr class="template">
-          <td>{index}</td>
-          <td data='group'>{job.group}</td>
-          <td title="{job.description}" data='name'>{job.name}</td>
-          <td data='schedule'>{job.schedule}</td>
-          <td data='nextExecution'>{job.nextExecution}</td>
-          <td data='steps'>{job.steps}</td>
-          <td data='nodes'>{job.nodes}</td>
-          <td data='notification'>{job.notification}</td>
-          <!--<td>{job.statistics}</td>-->
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-
+    <div class="row">
+      <table id="list" class="table table-striped" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Name</th>
+            <th>Schedule</th>
+            <th>NextExecution</th>
+            <th>Steps</th>
+            <th>Nodes</th>
+            <th>Notification</th>
+            <!--<th>Statistics</th>-->
+          </tr>
+          <tr class="template">
+            <td data='group'>{job.group}</td>
+            <td title="{job.description}" data='name'>{job.name}</td>
+            <td data='schedule'>{job.schedule}</td>
+            <td data='nextExecution'>{job.nextExecution}</td>
+            <td data='steps'>{job.steps}</td>
+            <td data='nodes'>{job.nodes}</td>
+            <td data='notification'>{job.notification}</td>
+            <!--<td>{job.statistics}</td>-->
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
     crossorigin="anonymous"></script>
-  <script type="text/javascript" src="nano.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.colVis.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
   <script type="text/javascript" src="local_config.js"></script>
   <script type="text/javascript" src="list.js"></script>
 </body>

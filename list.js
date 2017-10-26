@@ -1,24 +1,5 @@
 var jobs = [];
 
-function find() {
-  if (jobs.length <= 0) return;
-  var text = $("#condition").val().trim();
-  if (text == '') return show();
-  var isOr = false;
-  var conds = {};
-  $.each(text.split(/[, ]/g), function (i, c) {
-    var key = c.toLowerCase();
-    if (key == 'or') {
-      isOr = true;
-      return;
-    }
-    var p = key.split(/[=]/g);
-    if (p.length == 2) conds[p[0]] = p[1];
-  });
-  show(conds, isOr);
-  $(".row-count").text($("#list tbody tr:visible").length);
-}
-
 function show(conds, isOr) {
   isOr = isOr || (conds && Object.keys(conds).length == 1);
   $("#list tbody").children('tr').map(function () {
@@ -63,25 +44,29 @@ function fetchAll() {
       var jobUrl = $(job).find(".hover_show_job_info").attr("href");
       fetch(jobUrl).done(function (jobData) {
         var $jobData = $(jobData);
-        jobs.push({
-          group: $.trim($jobData.find(".jobInfoSection a.secondary").text()),
-          name: $.trim($jobData.find(".jobInfoSection a.primary").text()),
-          schedule:
+        jobs.push([
+          // group
+          $.trim($jobData.find(".jobInfoSection a.secondary").text()),
+          //name
+          $.trim($jobData.find(".jobInfoSection a.primary").text()),
+          // schedule
           $jobData
             .find(".crontab .cronselected")
             .map(function () { return $.trim($(this).text()); })
             .get().join(" "),
-          nextExecution: $.trim($jobData.find("#schedExDetails .timeabs").text()),
-          steps:
+          // nextExecution
+          $.trim($jobData.find("#schedExDetails .timeabs").text()),
+          // steps
           $jobData
             .find(".argString")
             .map(function () { return $.trim($(this).text()); })
             .get().join("<br>"),
-          nodes: $.trim($jobData.find("[title='Display matching nodes'] .queryvalue").text()),
-          notification:
+          // nodes
+          $.trim($jobData.find("[title='Display matching nodes'] .queryvalue").text()),
+          // notification
           $.trim($jobData.find(".displabel").next('td').text())
             .replace(/\n/g, '').replace(/( )+/g, ' ')
-        });
+        ]);
       });
       // return false;
     });
@@ -89,6 +74,9 @@ function fetchAll() {
 }
 
 function doPrint() {
+  $dataTable = $('#list').dataTable();
+  $dataTable.fnClearTable();
+
   if (jobs.length <= 0) {
     showMessage("ログイン必要あるかもしれません");
     return;
@@ -102,14 +90,7 @@ function doPrint() {
     return ((g1 < g2) ? -1 : ((g1 > g2) ? 1 : 0));
   });
 
-  var $tbody = $("#list").children('tbody');
-  $tbody.empty();
-  var template = $('.template').html();
-  $tbody[0].innerHTML = $.map(
-    jobs,
-    function (job, i) {
-      return "<tr>" + nano(template, { index: i + 1, job: job }) + "</tr>";
-    }).join('');
+  $dataTable.fnAddData(jobs)
 
   $(".row-count").text($("#list tbody tr:visible").length);
   showMessage("完了..." + new Date());
@@ -120,9 +101,20 @@ function showMessage(msg) {
   $("#hoge").prop('disabled', false);
 }
 
+function downloadAsExcel(e) {
+  var today = new Date();
+  var postfix = [today.getFullYear(), today.getMonth() + 1, today.getDate()].join('-');
+  //getting data from our div that contains the HTML table
+  var data_type = 'data:application/vnd.ms-excel,';
+  var table_html = $('#list').parent().prop('outerHTML');
+
+  window.open(data_type + encodeURIComponent(table_html));
+  e.preventDefault();
+}
+
 $(function () {
   $('.btn-refresh').on('click', fetchAll);
-  $('.btn-find').on('click', find);
+  $('.btn-download').on('click', downloadAsExcel);
 
   $(document)
     .ajaxStart(function () {
@@ -134,6 +126,16 @@ $(function () {
       doPrint();
       $('.btn-refresh').prop('disabled', false);
     });
+
+  $('#list').DataTable({
+    "paging": false,
+    dom: 'Bfrtip',
+    buttons: [
+      { extend: 'copy', name: 'Copy' },
+      { extend: 'csv', name: 'RundeckCsv', extension: '.csv' },
+      { extend: 'excel', name: 'RundeckExcel', extension: '.xlsx' }
+    ]
+  }).buttons().container().appendTo('#buttons');
 
   fetchAll();
 });
