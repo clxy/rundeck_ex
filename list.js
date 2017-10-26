@@ -129,6 +129,7 @@ $(function () {
 
   $('#list').DataTable({
     "paging": false,
+    "processing": true,
     dom: 'Bfrtip',
     buttons: [
       { extend: 'copy', name: 'Copy' },
