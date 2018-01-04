@@ -10,3 +10,5 @@
     * jobs    /jobs
     * job     /job/{job_id}
     * 実行中   /executions/running
+* url sample
+    * http://server/rundeck/api/16/project/TestPrj/jobs/export?authtoken={token}
