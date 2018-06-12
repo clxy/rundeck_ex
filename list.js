@@ -58,9 +58,14 @@ function fetchAll() {
           $.trim($jobData.find("#schedExDetails .timeabs").text()),
           // steps
           $jobData
-            .find(".argString")
-            .map(function () { return $.trim($(this).text()); })
-            .get().join("<br>"),
+            .find(".wfitem")
+            .map(function () {
+              var result = [$.trim($(this).find("a").text())];
+              var argString = $(this).find(".argString");
+              result.push(argString.attr("title") || argString.text());
+              return result;
+            })
+            .get().filter(Boolean).join("<br>"),
           // nodes
           $.trim($jobData.find("[title='Display matching nodes'] .queryvalue").text()),
           // notification
@@ -118,13 +123,17 @@ $(function () {
 
   $(document)
     .ajaxStart(function () {
-      $('.btn-refresh').prop('disabled', true);
+      $('.btn-refresh')
+        .prop('disabled', true)
+        .find(".glyphicon").addClass("spin");
       jobs = [];
       showMessage('更新中...');
     })
     .ajaxStop(function () {
       doPrint();
-      $('.btn-refresh').prop('disabled', false);
+      $('.btn-refresh')
+        .prop('disabled', false)
+        .find(".glyphicon").removeClass("spin");
     });
 
   $('#list').DataTable({
